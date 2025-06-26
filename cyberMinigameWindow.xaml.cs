@@ -179,8 +179,11 @@ namespace CyberBotPart3
             dummyRadioBtn.IsChecked = true; // Uncheck all visible options
             nextQuestionBtn.Visibility = Visibility.Collapsed;
             submitBtn.IsEnabled = true;
+            currentIndex++; // ✅ move to next question
             LoadNextQuestion();
         }
+
+
 
     }
 }
