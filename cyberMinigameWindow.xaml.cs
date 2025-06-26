@@ -14,8 +14,9 @@ namespace CyberBotPart3
         private int score = 0;
         private bool isMCQ = true; // true = multiple choice, false = true/false
         private string correctAnswer = "";
-        private List<RadioButton> radioButtons;
-        private List<TextBox> answerBoxes;
+        private List<RadioButton> radioButtons = new();
+        private List<TextBox> answerBoxes = new();
+
 
         public cyberMinigameWindow()
         {
@@ -56,6 +57,11 @@ namespace CyberBotPart3
                 answerBoxes[2].Text = q.AnswerC;
                 answerBoxes[3].Text = q.AnswerD;
 
+                radioButtons[0].Content = q.OptionA;
+                radioButtons[1].Content = q.OptionB;
+                radioButtons[2].Content = q.OptionC;
+                radioButtons[3].Content = q.OptionD;
+
                 for (int i = 0; i < 4; i++)
                 {
                     answerBoxes[i].Visibility = Visibility.Visible;
@@ -71,6 +77,10 @@ namespace CyberBotPart3
                 var tfIndex = currentIndex - questionBank.MultipleChoiceQuestions.Count;
                 var q = questionBank.TrueFalseQuestions[tfIndex];
                 questionTxtbx.Text = q.Question;
+
+                radioButtons[0].Content = q.OptionA;
+                radioButtons[1].Content = q.OptionB;
+
 
                 answerBoxes[0].Text = q.AnswerA;
                 answerBoxes[1].Text = q.AnswerB;
@@ -97,16 +107,30 @@ namespace CyberBotPart3
             {
                 ShowFinalScore();
             }
+
+
         }
 
         private void SubmitAnswer_Click(object sender, RoutedEventArgs e)
         {
+
+            // Check if none of the real radio buttons are selected
+            if (!(radioButtons[0].IsChecked == true ||
+                  radioButtons[1].IsChecked == true ||
+                  (isMCQ && radioButtons[2].IsChecked == true) ||
+                  (isMCQ && radioButtons[3].IsChecked == true)))
+            {
+                MessageBox.Show("Please select an option before submitting.", "No Answer Selected", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             string selected = "";
 
-            if ((bool)radioButtons[0].IsChecked) selected = "Answer: A";
-            else if ((bool)radioButtons[1].IsChecked) selected = "Answer: B";
-            else if (isMCQ && (bool)radioButtons[2].IsChecked) selected = "Answer: C";
-            else if (isMCQ && (bool)radioButtons[3].IsChecked) selected = "Answer: D";
+            if (radioButtons[0].IsChecked == true) selected = "Answer: A";
+            else if (radioButtons[1].IsChecked == true) selected = "Answer: B";
+            else if (isMCQ && radioButtons[2].IsChecked == true) selected = "Answer: C";
+            else if (isMCQ && radioButtons[3].IsChecked == true) selected = "Answer: D";
+
 
             var block = new Paragraph();
 
@@ -129,14 +153,11 @@ namespace CyberBotPart3
             resultsRichTxtBx.Document.Blocks.Clear();
             resultsRichTxtBx.Document.Blocks.Add(block);
 
-            currentIndex++;
-
-            // Delay before loading next question
-            Task.Delay(2000).ContinueWith(_ =>
-            {
-                Dispatcher.Invoke(() => LoadNextQuestion());
-            });
+            // Move to next question only when button is clicked
+            nextQuestionBtn.Visibility = Visibility.Visible;
+            submitBtn.IsEnabled = false;
         }
+
 
         private void ShowFinalScore()
         {
@@ -152,5 +173,14 @@ namespace CyberBotPart3
             string result = $"You scored {score} out of {questionBank.MultipleChoiceQuestions.Count + questionBank.TrueFalseQuestions.Count}.";
             resultsRichTxtBx.Document.Blocks.Add(new Paragraph(new Run(result)));
         }
+
+        private void NextQuestionBtn_Click(object sender, RoutedEventArgs e)
+        {
+            dummyRadioBtn.IsChecked = true; // Uncheck all visible options
+            nextQuestionBtn.Visibility = Visibility.Collapsed;
+            submitBtn.IsEnabled = true;
+            LoadNextQuestion();
+        }
+
     }
 }

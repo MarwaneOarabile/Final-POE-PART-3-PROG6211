@@ -18,14 +18,16 @@
         <RadioButton x:Name="optionC_RadioBtn" Content="RadioButton" HorizontalAlignment="Left" Margin="274,217,0,0" VerticalAlignment="Top"/>
         <RadioButton x:Name="optionB_RadioBtn" Content="RadioButton" HorizontalAlignment="Left" Margin="274,168,0,0" VerticalAlignment="Top"/>
         <RadioButton x:Name="optionD_RadioBtn" Content="RadioButton" HorizontalAlignment="Left" Margin="274,264,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="answerATxtBx" HorizontalAlignment="Left" Margin="400,123,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" RenderTransformOrigin="0.008,1.825" TextChanged="answerATxtBx_TextChanged"/>
-        <TextBox x:Name="answerBTxtBx" HorizontalAlignment="Left" Margin="400,168,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" RenderTransformOrigin="0.008,1.825"/>
-        <TextBox x:Name="answerCTxtBx" HorizontalAlignment="Left" Margin="400,214,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" RenderTransformOrigin="0.008,1.825"/>
-        <TextBox x:Name="answerDTxtBx" HorizontalAlignment="Left" Margin="400,264,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" RenderTransformOrigin="0.008,1.825"/>
+        <TextBox x:Name="answerATxtBx" HorizontalAlignment="Left" Margin="400,123,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="284" RenderTransformOrigin="0.008,1.825"/>
+        <TextBox x:Name="answerBTxtBx" HorizontalAlignment="Left" Margin="400,168,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="284" RenderTransformOrigin="0.008,1.825"/>
+        <TextBox x:Name="answerCTxtBx" HorizontalAlignment="Left" Margin="400,214,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="284" RenderTransformOrigin="0.008,1.825"/>
+        <TextBox x:Name="answerDTxtBx" HorizontalAlignment="Left" Margin="400,264,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="284" RenderTransformOrigin="0.008,1.825"/>
         <Label Content="Question" HorizontalAlignment="Left" Margin="10,84,0,0" VerticalAlignment="Top"/>
-        <TextBox HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="349" Height="69" TextChanged="TextBox_TextChanged" Text="Cybersecurity Mini-Game"/>
-        <TextBox x:Name="questionTxtbx" HorizontalAlignment="Left" Margin="84,84,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="550" Height="26" TextChanged="TextBox_TextChanged_1"/>
+        <TextBox HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="349" Height="69"  Text="Cybersecurity Mini-Game"/>
+        <TextBox x:Name="questionTxtbx" HorizontalAlignment="Left" Margin="84,84,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="600" Height="26" />
         <Button x:Name="submitBtn" Content="Submit Answer" HorizontalAlignment="Left" Margin="600,350,0,0" VerticalAlignment="Top" Click="SubmitAnswer_Click"/>
+        <RadioButton x:Name="dummyRadioBtn" Visibility="Collapsed" IsChecked="True"/>
+        <Button x:Name="nextQuestionBtn" Content="Next Question" HorizontalAlignment="Left" Margin="600,380,0,0" VerticalAlignment="Top" Click="NextQuestionBtn_Click" Visibility="Collapsed"/>
 
 
 

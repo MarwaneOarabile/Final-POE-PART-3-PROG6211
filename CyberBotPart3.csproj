@@ -9,13 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Page Remove="WelcomeWindow.xaml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="WelcomeWindow.xaml">
+    <Page Update="WelcomeWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
-    </None>
+    </Page>
   </ItemGroup>
 
 </Project>
