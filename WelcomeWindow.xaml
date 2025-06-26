@@ -7,18 +7,12 @@
         mc:Ignorable="d"
         Title="WelcomeWindow" Height="450" Width="800">
     <Grid>
-        <Image Margin="10,10,10,10" Source="/cyber-security-logo.jpg" Stretch="Fill" Opacity="0.2" ></Image>
+        <Image Margin="10,10,10,10" Source="/cyber-security-logo.jpg" Stretch="Fill" Opacity="0.2" />
 
-        <Button Content="Start Chat" HorizontalAlignment="Left" Margin="115,358,0,0" VerticalAlignment="Top" Height="47" Width="136"/>
-        <Button Content="Exit Application" HorizontalAlignment="Left" Margin="551,358,0,0" VerticalAlignment="Top" Height="47" Width="136" />
-        <Button Content="FAQ" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" />
-        <RichTextBox Margin="115,20,113,217">
-            <FlowDocument>
-                <Paragraph>
-                    <Run Text="RichTextBox"/>
-                </Paragraph>
-            </FlowDocument>
-        </RichTextBox>
+        <Button x:Name="startBtn" Content="Start Chat" HorizontalAlignment="Left" Margin="115,358,0,0" VerticalAlignment="Top" Height="47" Width="136" IsEnabled="False"/>
+        <Button Content="Exit Application" HorizontalAlignment="Left" Margin="551,358,0,0" VerticalAlignment="Top" Height="47" Width="136" Click="Exit_Click"/>
+        <Button Content="FAQ" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
 
+        <RichTextBox x:Name="outputBox" Margin="115,20,113,217" />
     </Grid>
 </Window>
