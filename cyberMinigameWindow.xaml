@@ -1,0 +1,33 @@
+﻿<Window x:Class="CyberBotPart3.cyberMinigameWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CyberBotPart3"
+        mc:Ignorable="d"
+        Title="cyberMinigameWindow" Height="450" Width="800">
+    <Grid Background="#FF737373">
+        <RichTextBox x:Name="resultsRichTxtBx" Margin="274,303,252,31">
+            <FlowDocument>
+                <Paragraph>
+                    <Run Text=""/>
+                </Paragraph>
+            </FlowDocument>
+        </RichTextBox>
+        <RadioButton x:Name="optionA_RadioBtn" Content="RadioButton" HorizontalAlignment="Left" Margin="274,126,0,0" VerticalAlignment="Top"/>
+        <RadioButton x:Name="optionC_RadioBtn" Content="RadioButton" HorizontalAlignment="Left" Margin="274,217,0,0" VerticalAlignment="Top"/>
+        <RadioButton x:Name="optionB_RadioBtn" Content="RadioButton" HorizontalAlignment="Left" Margin="274,168,0,0" VerticalAlignment="Top"/>
+        <RadioButton x:Name="optionD_RadioBtn" Content="RadioButton" HorizontalAlignment="Left" Margin="274,264,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="answerATxtBx" HorizontalAlignment="Left" Margin="400,123,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" RenderTransformOrigin="0.008,1.825" TextChanged="answerATxtBx_TextChanged"/>
+        <TextBox x:Name="answerBTxtBx" HorizontalAlignment="Left" Margin="400,168,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" RenderTransformOrigin="0.008,1.825"/>
+        <TextBox x:Name="answerCTxtBx" HorizontalAlignment="Left" Margin="400,214,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" RenderTransformOrigin="0.008,1.825"/>
+        <TextBox x:Name="answerDTxtBx" HorizontalAlignment="Left" Margin="400,264,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" RenderTransformOrigin="0.008,1.825"/>
+        <Label Content="Question" HorizontalAlignment="Left" Margin="10,84,0,0" VerticalAlignment="Top"/>
+        <TextBox HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="349" Height="69" TextChanged="TextBox_TextChanged" Text="Cybersecurity Mini-Game"/>
+        <TextBox x:Name="questionTxtbx" HorizontalAlignment="Left" Margin="84,84,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="550" Height="26" TextChanged="TextBox_TextChanged_1"/>
+        <Button x:Name="submitBtn" Content="Submit Answer" HorizontalAlignment="Left" Margin="600,350,0,0" VerticalAlignment="Top" Click="SubmitAnswer_Click"/>
+
+
+
+    </Grid>
+</Window>
