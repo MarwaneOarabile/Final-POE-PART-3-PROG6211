@@ -1,0 +1,5 @@
+Enable 2FA|Set up two-factor authentication on all accounts|2025-07-01|False
+Update Antivirus|Download and install the latest antivirus definitions|null|False
+Backup Files|Back up important documents to the cloud|2025-06-30|True
+Check Phishing Email|Review suspicious email with IT support|2025-07-02|False
+Change Router Password|Update default admin password on router|null|False

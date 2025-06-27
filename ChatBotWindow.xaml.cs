@@ -1,36 +1,27 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace CyberBotPart3
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class ChatBotWindow : Window
     {
-        // Conversation state
+        // Conversation state variables
         private string currentTopic = string.Empty;
         private string userName = "User";
         private bool cancel = false;
         private bool isAwaitingInput = false;
         private bool isTyping = false;
 
-        private static readonly string BaseTextFolder = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "txt files");
+        private TipsHolder tips = new TipsHolder();
 
+        private static readonly string BaseTextFolder = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "txt files");
         private static readonly string TaskFilePath = System.IO.Path.Combine(BaseTextFolder, "tasks.txt");
         private static readonly string ActivityLogPath = System.IO.Path.Combine(BaseTextFolder, "activity_log.txt");
-
-
 
         // Topic memory flags
         private bool talkedAboutPhishing = false;
@@ -40,62 +31,27 @@ namespace CyberBotPart3
         private bool talkedAboutScam = false;
         private bool talkedAboutCybersecurity = false;
 
-        // Tip collections
-        private List<string> phishingTips = new List<string>
+        // Sentiment detection keywords and responses
+        public System.Collections.Generic.List<(string keyword, string response)> sentimentKeywords = new System.Collections.Generic.List<(string, string)>
         {
-            "Be cautious of emails asking for personal information. Scammers often disguise themselves as trusted organisations.",
-            "Check the sender's email address—phishers often use fake but similar addresses.",
-            "Never click on suspicious links. Hover over them first to see the actual URL.",
-            "Look out for grammar mistakes or urgent messages—they are common signs of phishing."
+            ("worried", "CyberBot: It's okay to feel worried. Cybersecurity can be tricky, but I'm here to help guide you."),
+            ("stressed", "CyberBot: I understand that cybersecurity can feel overwhelming. You're not alone—ask me anything, and we’ll take it step by step."),
+            ("scared", "CyberBot: Don’t worry, you're doing the right thing by learning. I'm here to help you stay safe online."),
+            ("confused", "CyberBot: If something seems confusing, feel free to ask. I’ll explain it in a simpler way."),
+            ("frustrated", "CyberBot: I know it can be frustrating. Let’s work through it together!"),
+            ("curious", "CyberBot: Curiosity is the first step to better cybersecurity. What would you like to learn about?")
+        };
+        private Dictionary<string, List<string>> intentMap = new Dictionary<string, List<string>>
+        {
+            { "add_task", new List<string> { "add task", "new task", "to-do", "set a task", "create reminder", "make a task" } },
+            { "reminder", new List<string> { "remind me", "reminder", "set reminder", "alert me" } },
+            { "log", new List<string> { "show history", "activity log", "what did i do", "what have you done", "log" } },
+            { "help", new List<string> { "help", "show help", "assist me" } },
+            { "exit", new List<string> { "exit", "quit", "close", "bye" } },
+            { "minigame", new List<string> { "minigame", "play game", "start game" } }
         };
 
-        private List<string> passwordTips = new List<string>
-        {
-            "Don't reuse passwords across sites.",
-            "Use a password manager to generate and store secure passwords.",
-            "Enable two-factor authentication where possible."
-        };
 
-        List<string> browsingTips = new()
-            {
-                "Keep your browser and software up to date.",
-                "Avoid clicking on unknown links or ads.",
-                   "Use secure websites with HTTPS."
-            };
-
-        List<string> privacyTips = new()
-            {
-                "Limit the personal information you share online.",
-                "Review privacy settings on social media platforms.",
-                "Be cautious when using public Wi-Fi networks."
-            };
-
-        List<string> scamTips = new()
-            {
-                 "Always double-check the sender’s identity.",
-                 "Don’t respond to messages requesting urgent payment or personal info.",
-                 "Legitimate companies don’t ask for sensitive info over email."
-            };
-
-        List<string> cybersecurityTips = new()
-            {
-                "Install antivirus software and keep it updated.",
-                "Use strong, unique passwords for each account.",
-                "Avoid using public Wi-Fi for sensitive transactions."
-            };
-
-        // Other tip lists (browsingTips, privacyTips, etc.) would go here...
-
-        // Sentiment detection
-        private List<(string keyword, string response)> sentimentKeywords = new List<(string, string)>
-                    {
-                        ("worried", "CyberBot: It's okay to feel worried. Cybersecurity can be tricky, but I'm here to help guide you."),
-                        ("stressed", "CyberBot: I understand that cybersecurity can feel overwhelming. You're not alone—ask me anything, and we’ll take it step by step."),
-                        ("scared", "CyberBot: Don’t worry, you're doing the right thing by learning. I'm here to help you stay safe online."),
-                        ("confused", "CyberBot: If something seems confusing, feel free to ask. I’ll explain it in a simpler way."),
-                        ("frustrated", "CyberBot: I know it can be frustrating. Let’s work through it together!"),
-                        ("curious", "CyberBot: Curiosity is the first step to better cybersecurity. What would you like to learn about?")
-};
 
 
         public ChatBotWindow(string name)
@@ -118,10 +74,10 @@ namespace CyberBotPart3
             ScrollToBottom();
         }
 
-        private async void AddBotMessage(string message)
+        private async Task AddBotMessage(string message)
         {
             if (isTyping)
-                return; // Prevent multiple bot messages from overlapping
+                return; // Prevent overlapping bot messages
 
             isTyping = true;
 
@@ -140,8 +96,6 @@ namespace CyberBotPart3
             isTyping = false;
         }
 
-
-
         private void ScrollToBottom()
         {
             ConversationHolderTxtBx.ScrollToEnd();
@@ -151,251 +105,284 @@ namespace CyberBotPart3
         // Response System
         // ======================
 
-        private void ProcessUserInput(string input)
+        
+
+            private async Task ProcessUserInput(string input)
         {
             string lowerInput = input.ToLower();
 
-            // Task-related
-            if (lowerInput.ContainsAny("task", "remind", "todo", "action", "reminder"))
+            // Use fuzzy NLP matching
+            string detectedIntent = LinguistischeDistance.LinguistiDistance(lowerInput, intentMap);
+
+            switch (detectedIntent)
             {
-                HandleTaskCreation(input);
-                return;
+                case "add_task":
+                case "reminder":
+                    HandleTaskCreation(input);
+                    return;
+
+                case "log":
+                    await ShowActivityLogAsync();
+                    LogStructuredActivity("User requested to view activity log.");
+                    return;
+
+                case "minigame":
+                    var miniGameWindow = new cyberMinigameWindow();
+                    miniGameWindow.Show();
+                    this.Hide();
+                    miniGameWindow.Closed += (s, args) => this.Show();
+                    return;
+
+                case "help":
+                    await ShowHelpMenu();
+                    return;
+
+                case "exit":
+                    await AddBotMessage("Goodbye! Stay safe online.");
+                    Close();
+                    return;
             }
 
-            // Direct commands
-            if (lowerInput.ContainsAny("help"))
-            {
-                ShowHelpMenu();
-                return;
-            }
-            if (lowerInput.ContainsAny("exit", "quit", "close"))
-            {
-                AddBotMessage("Goodbye! Stay safe online.");
-                Close();
-                return;
-            }
-
-            // Sentiment
+            // Sentiment detection
             foreach (var (keyword, response) in sentimentKeywords)
             {
                 if (lowerInput.Contains(keyword))
                 {
-                    AddBotMessage(response);
+                    await AddBotMessage(response);
+                    LogActivity("NLP", $"Keyword '{keyword}' detected. Responded accordingly.");
+                    LogStructuredActivity($"NLP interpreted keyword: '{keyword}' → responded with guidance.");
+
                     return;
                 }
             }
 
-            // 🔐 Topic matching (must come before small talk)
+            // Topic matching (priority order)
             if (lowerInput.ContainsAny("phish", "scam email", "email trick", "fake message"))
             {
-                HandlePhishingTopic();
+                await HandlePhishingTopic();
                 return;
             }
             if (lowerInput.ContainsAny("password", "strong password", "secure login"))
             {
-                HandlePasswordTopic();
+                await HandlePasswordTopic();
                 return;
             }
             if (lowerInput.ContainsAny("browsing", "internet", "web", "surf", "online safety"))
             {
-                HandleBrowsingTopic();
+                await HandleBrowsingTopic();
                 return;
             }
             if (lowerInput.ContainsAny("privacy", "private", "data leak", "personal info"))
             {
-                HandlePrivacyTopic();
+                await HandlePrivacyTopic();
                 return;
             }
             if (lowerInput.ContainsAny("scam", "fraud", "fake", "deceive", "spoof"))
             {
-                HandleScamTopic();
+                await HandleScamTopic();
                 return;
             }
             if (lowerInput.ContainsAny("cybersecurity", "cyber security", "cyber safety"))
             {
-                HandleCybersecurityTopic();
+                await HandleCybersecurityTopic();
                 return;
             }
 
-            // ✅ Small talk — LAST priority
+            // Small talk last priority
             if (lowerInput.ContainsAny("hello", "hi", "hey"))
             {
-                AddBotMessage($"Hello {userName}, I'm here to help with your cybersecurity questions!");
+                await AddBotMessage($"Hello {userName}, I'm here to help with your cybersecurity questions!");
+                
                 return;
             }
             if (lowerInput.ContainsAny("how are you", "how's it going", "how do you feel"))
             {
-                AddBotMessage("I'm just a bot, but thanks for asking! I'm running securely and ready to chat. 😊");
+                await AddBotMessage("I'm just a bot, but thanks for asking! I'm running securely and ready to chat. 😊");
                 return;
             }
             if (lowerInput.ContainsAny("thank you", "thanks"))
             {
-                AddBotMessage("You're welcome! Stay safe online. 🔐");
+                await AddBotMessage("You're welcome! Stay safe online. 🔐");
                 return;
             }
             if (lowerInput.ContainsAny("what's your name", "who are you"))
             {
-                AddBotMessage("I'm CyberBot, your cybersecurity assistant. 🤖");
+                await AddBotMessage("I'm CyberBot, your cybersecurity assistant. 🤖");
                 return;
             }
 
             // Fallback
-            AddBotMessage("I'm not sure about that. Try asking about 'phishing' or 'passwords'.");
+            await AddBotMessage("I'm not sure about that. Try asking about 'phishing' or 'passwords'.");
         }
 
+        // ======================
+        // Topic Handlers (unchanged)
+        // ======================
 
-
-        private void HandlePhishingTopic()
+        private async Task HandlePhishingTopic()
         {
             if (!(currentTopic.Equals("phishing")))
             {
                 currentTopic = "phishing";
-                AddBotMessage("Phishing is when someone tries to trick you into giving personal info by pretending to be someone you trust.");
-            }else if (talkedAboutPhishing)
-            {
-                Random rand = new Random();
-                AddBotMessage($"Tip: {phishingTips[rand.Next(phishingTips.Count)]}");
+                await AddBotMessage("Phishing is when someone tries to trick you into giving personal info by pretending to be someone you trust.");
             }
-
+            else if (talkedAboutPhishing)
+            {
+                var rand = new Random();
+                await AddBotMessage($"Tip: {tips.phishingTips[rand.Next(tips.phishingTips.Count)]}");
+            }
             talkedAboutPhishing = true;
         }
 
-        private void HandlePasswordTopic()
+        private async Task HandlePasswordTopic()
         {
             if (!(currentTopic.Equals("password")))
             {
                 currentTopic = "password";
-                AddBotMessage("A strong password must be longer than 8 characters and include a mix of uppercase, lowercase, numbers, and symbols.");
-            }else if (talkedAboutPassword)
-            {
-                Random rand = new Random();
-                AddBotMessage($"Tip: {passwordTips[rand.Next(passwordTips.Count)]}");
+                await AddBotMessage("A strong password must be longer than 8 characters and include a mix of uppercase, lowercase, numbers, and symbols.");
             }
-
+            else if (talkedAboutPassword)
+            {
+                var rand = new Random();
+                await AddBotMessage($"Tip: {tips.passwordTips[rand.Next(tips.passwordTips.Count)]}");
+            }
             talkedAboutPassword = true;
         }
 
-
-        private void HandleBrowsingTopic()
+        private async Task HandleBrowsingTopic()
         {
             if (!(currentTopic.Equals("browsing")))
             {
                 currentTopic = "browsing";
-                AddBotMessage("To browse safely: keep your software updated, use antivirus, and avoid clicking suspicious links.");
-            }else if (talkedAboutBrowsing)
-            {
-                Random rand = new Random();
-                AddBotMessage($"Tip: {browsingTips[rand.Next(browsingTips.Count)]}");
+                await AddBotMessage("To browse safely: keep your software updated, use antivirus, and avoid clicking suspicious links.");
             }
-
+            else if (talkedAboutBrowsing)
+            {
+                var rand = new Random();
+                await AddBotMessage($"Tip: {tips.browsingTips[rand.Next(tips.browsingTips.Count)]}");
+            }
             talkedAboutBrowsing = true;
         }
 
-
-        private void HandlePrivacyTopic()
+        private async Task HandlePrivacyTopic()
         {
             if (!(currentTopic.Equals("privacy")))
             {
                 currentTopic = "privacy";
-                AddBotMessage("Protect your privacy by limiting the personal information you share online.");
-
-            }else if (talkedAboutPrivacy)
-            {
-                Random rand = new Random();
-                AddBotMessage($"Tip: {privacyTips[rand.Next(privacyTips.Count)]}");
+                await AddBotMessage("Protect your privacy by limiting the personal information you share online.");
             }
-
+            else if (talkedAboutPrivacy)
+            {
+                var rand = new Random();
+                await AddBotMessage($"Tip: {tips.privacyTips[rand.Next(tips.privacyTips.Count)]}");
+            }
             talkedAboutPrivacy = true;
         }
 
-
-        private void HandleScamTopic()
+        private async Task HandleScamTopic()
         {
             if (!(currentTopic.Equals("scam")))
             {
                 currentTopic = "scam";
-                AddBotMessage("Scams often try to trick you with urgent messages. Always verify the sender before clicking on links or sharing info.");
-            }else if (talkedAboutScam)
-            {
-                AddBotMessage($"Tip: {scamTips[new Random().Next(scamTips.Count)]}");
+                await AddBotMessage("Scams often try to trick you with urgent messages. Always verify the sender before clicking on links or sharing info.");
             }
-
+            else if (talkedAboutScam)
+            {
+                var rand = new Random();
+                await AddBotMessage($"Tip: {tips.scamTips[rand.Next(tips.scamTips.Count)]}");
+            }
             talkedAboutScam = true;
         }
 
-
-        private void HandleCybersecurityTopic()
+        private async Task HandleCybersecurityTopic()
         {
             if (!(currentTopic.Equals("cybersecurity")))
             {
                 currentTopic = "cybersecurity";
-                AddBotMessage("Cybersecurity is the practice of protecting systems, networks, and data from cyber threats.");
-            }else if (talkedAboutCybersecurity)
-            {
-                AddBotMessage($"Tip: {cybersecurityTips[new Random().Next(cybersecurityTips.Count)]}");
+                await AddBotMessage("Cybersecurity is the practice of protecting systems, networks, and data from cyber threats.");
             }
-
+            else if (talkedAboutCybersecurity)
+            {
+                var rand = new Random();
+                await AddBotMessage($"Tip: {tips.cybersecurityTips[rand.Next(tips.cybersecurityTips.Count)]}");
+            }
             talkedAboutCybersecurity = true;
         }
 
-
-        
-
-
-        private void ShowHelpMenu()
+        // ======================
+        // Help Menu
+        // ======================
+        private async Task ShowHelpMenu()
         {
             string helpText = "I can help with:\n" +
-                            "- Phishing scams\n" +
-                            "- Password safety\n" +
-                            "- Secure browsing\n\n" +
-                            "Commands:\n" +
-                            "- 'help': Show this menu\n" +
-                            "- 'exit': End chat";
-            AddBotMessage(helpText);
+                              "- Phishing scams\n" +
+                              "- Password safety\n" +
+                              "- Secure browsing\n" +
+                              "- Privacy protection\n" +
+                              "- Recognizing scams and fraud\n" +
+                              "- General cybersecurity tips\n\n" +
+                              "Commands:\n" +
+                              "- 'help': Show this menu\n" +
+                              "- 'manage' or 'tasks': Manage your tasks (add, delete, complete)\n" +
+                              "- 'minigame': Play a cybersecurity mini-game\n" +
+                              "- 'show activity log' or 'what have you done': View recent actions I've taken\n" +
+                              "- 'exit': End chat\n\n" +
+                              "Try asking me about phishing, passwords, browsing safety, privacy, scams, or cybersecurity.";
+
+            await AddBotMessage(helpText);
         }
 
-        // ======================
-        // task handler
-        // ======================
-        // File operations
-        
 
-        private List<CyberSecurityTask> LoadTasks()
+        // ======================
+        // Task Handling
+        // ======================
+
+        private System.Collections.Generic.List<CyberSecurityTask> LoadTasks()
         {
-            var tasks = new List<CyberSecurityTask>();
+            var tasks = new System.Collections.Generic.List<CyberSecurityTask>();
+
             if (File.Exists(TaskFilePath))
             {
                 foreach (string line in File.ReadAllLines(TaskFilePath))
                 {
-                    var parts = line.Split('|');
-                    tasks.Add(new CyberSecurityTask
+                    try
                     {
-                        Title = parts[0],
-                        Description = parts[1],
-                        Reminder = parts[2] == "null" ? null : DateTime.Parse(parts[2]),
-                        IsComplete = bool.Parse(parts[3])
-                    });
+                        var parts = line.Split('|');
+                        if (parts.Length != 4) continue;
+
+                        var task = new CyberSecurityTask
+                        {
+                            Title = parts[0],
+                            Description = parts[1],
+                            Reminder = parts[2] == "null" ? (DateTime?)null : DateTime.Parse(parts[2]),
+                            IsComplete = bool.Parse(parts[3])
+                        };
+
+                        tasks.Add(task);
+                    }
+                    catch
+                    {
+                        continue;
+                    }
                 }
             }
+
             return tasks;
         }
 
         private async void HandleTaskCreation(string userInput)
         {
-            AddBotMessage("Let's create a new cybersecurity task!" + "\nWhat should we call this task? (e.g. 'Enable 2FA')");
-
-           
+            await AddBotMessage("Let's create a new cybersecurity task!\nWhat should we call this task? (e.g. 'Enable 2FA')");
             string title = await WaitForUserInputAsync();
 
-            AddBotMessage("Please describe the task:");
+            await AddBotMessage("Please describe the task:");
             string description = await WaitForUserInputAsync();
 
-            AddBotMessage("When should I remind you? (e.g. 'tomorrow', 'in 3 days', or 'no')");
+            await AddBotMessage("When should I remind you? (e.g. 'tomorrow', 'in 3 days', or 'no')");
             string reminderInput = await WaitForUserInputAsync();
 
             DateTime? reminder = ParseReminder(reminderInput);
-            SaveNewTask(title, description, reminder);
-
+            await SaveNewTask(title, description, reminder);
         }
 
         private async Task<string> WaitForUserInputAsync()
@@ -404,29 +391,98 @@ namespace CyberBotPart3
 
             var tcs = new TaskCompletionSource<string>();
 
-            void Handler(object s, RoutedEventArgs e)
+            async void Handler(object s, RoutedEventArgs e)
             {
                 var text = userInputTxt.Text.Trim();
                 if (!string.IsNullOrWhiteSpace(text))
                 {
                     submitBtn.Click -= Handler;
-                    userInputTxt.Clear();
+                    AddUserMessage(text);
                     isAwaitingInput = false;
+                    userInputTxt.Clear();
                     tcs.TrySetResult(text);
                 }
                 else
                 {
-                    AddBotMessage("Please enter a value before submitting.");
+                    await AddBotMessage("Nope cant leave it blank. ;)");
                 }
             }
 
             submitBtn.Click += Handler;
 
             string result = await tcs.Task;
-
             return result;
         }
 
+        private async Task HandleTaskManagement()
+        {
+            var tasks = LoadTasks();
+
+            if (tasks.Count == 0)
+            {
+                await AddBotMessage("📭 You don't have any tasks.");
+                return;
+            }
+
+            // Show tasks with index
+            await AddBotMessage("Here are your tasks:");
+            for (int i = 0; i < tasks.Count; i++)
+            {
+                var task = tasks[i];
+                string status = task.IsComplete ? "✅ Completed" : "🕒 Pending";
+                string reminderText = task.Reminder.HasValue ? $" (Remind on {task.Reminder.Value:dd-MMM-yyyy})" : "";
+                await AddBotMessage($"{i + 1}. {task.Title} - {status}{reminderText}");
+            }
+
+            await AddBotMessage("Enter the task number you want to manage (or type 'cancel'):");
+            string choice = (await WaitForUserInputAsync()).Trim().ToLower();
+
+            if (choice == "cancel")
+            {
+                await AddBotMessage("❌ Task management cancelled.");
+                return;
+            }
+
+            if (int.TryParse(choice, out int taskNumber) && taskNumber >= 1 && taskNumber <= tasks.Count)
+            {
+                var selectedTask = tasks[taskNumber - 1];
+                await AddBotMessage($"📝 You selected: {selectedTask.Title}\nType 'delete' to remove it or 'complete' to mark it as done:");
+
+                string action = (await WaitForUserInputAsync()).Trim().ToLower();
+
+                if (action == "delete")
+                {
+                    LogActivity("Task", $"Deleted task '{selectedTask.Title}'");
+                    tasks.RemoveAt(taskNumber - 1);
+                    SaveTasks(tasks);
+                    await AddBotMessage("🗑️ Task deleted.");
+                    LogStructuredActivity($"Task deleted: '{selectedTask.Title}'");
+
+                }
+                else if (action == "complete")
+                {
+                    selectedTask.IsComplete = true;
+                    SaveTasks(tasks);
+                    LogActivity("Task", $"Marked task '{selectedTask.Title}' as completed");
+                    await AddBotMessage("✅ Task marked as completed.");
+                    LogStructuredActivity($"Task completed: '{selectedTask.Title}'");
+
+
+                }
+                else if (action == "cancel")
+                {
+                    await AddBotMessage("❌ Action cancelled.");
+                }
+                else
+                {
+                    await AddBotMessage("⚠️ Action not recognized. Please try again.");
+                }
+            }
+            else
+            {
+                await AddBotMessage("❌ Invalid task number. Try again or type 'cancel'.");
+            }
+        }
 
         private DateTime? ParseReminder(string input)
         {
@@ -444,6 +500,11 @@ namespace CyberBotPart3
                 }
             }
 
+            if (int.TryParse(input, out int directDays))
+            {
+                return DateTime.Today.AddDays(directDays);
+            }
+
             if (DateTime.TryParse(input, out DateTime exactDate))
             {
                 return exactDate;
@@ -452,8 +513,9 @@ namespace CyberBotPart3
             return null;
         }
 
-        private void SaveNewTask(string title, string description, DateTime? reminder)
+        private async Task SaveNewTask(string title, string description, DateTime? reminder)
         {
+
             var tasks = LoadTasks();
             tasks.Add(new CyberSecurityTask
             {
@@ -463,26 +525,73 @@ namespace CyberBotPart3
             });
             SaveTasks(tasks);
 
-            AddBotMessage($"✅ Task saved: {title}" +
-                (reminder.HasValue ? $" (Reminder set for {reminder:dd-MMM-yyyy})" : ""));
+            await AddBotMessage($"✅ Task saved: {title}" + (reminder.HasValue ? $" (Reminder set for {reminder:dd-MMM-yyyy})" : ""));
+            LogActivity("Task", $"Added task '{title}'");
+            if (reminder.HasValue)
+            {
+                LogActivity("Reminder", $"Reminder set for task '{title}' on {reminder:dd-MMM-yyyy}");
+            }
+
+            LogStructuredActivity($"Task added: '{title}'" + (reminder.HasValue ? $" (Reminder set for {reminder:dd-MMM-yyyy})" : ""));
+
+
+
         }
 
-        private void SaveTasks(List<CyberSecurityTask> tasks)
+        private void SaveTasks(System.Collections.Generic.List<CyberSecurityTask> tasks)
         {
             File.WriteAllLines(TaskFilePath, tasks.Select(t => t.ToString()));
         }
 
+        // ======================
+        // Logging and Activity Log Viewing
+        // ======================
 
+        private void LogStructuredActivity(string summary)
+        {
+            string logEntry = $"{DateTime.Now:dd/MM/yyyy HH:mm} | {summary}";
+            File.AppendAllLines(ActivityLogPath, new[] { logEntry });
+        }
+
+        private void LogActivity(string category, string description)
+        {
+            string logEntry = $"{DateTime.Now:dd/MM/yyyy HH:mm} | {category}: {description}";
+            File.AppendAllLines(ActivityLogPath, new[] { logEntry });
+        }
+
+
+        private async Task ShowActivityLogAsync()
+        {
+            if (File.Exists(ActivityLogPath))
+            {
+                string[] lines = File.ReadAllLines(ActivityLogPath);
+                var recentEntries = lines.Reverse().Take(10).Reverse(); // Last 10 entries
+                var formattedLog = "📒 Here's a summary of recent actions:\n";
+
+                int count = 1;
+                foreach (var line in recentEntries)
+                {
+                    formattedLog += $"{count}. {line.Split('|')[1].Trim()}\n";
+                    count++;
+                }
+
+                await AddBotMessage(formattedLog);
+            }
+            else
+            {
+                await AddBotMessage("No activity has been logged yet.");
+            }
+        }
 
         // ======================
         // Button Event Handlers
         // ======================
 
-        private void submitBtn_Click(object sender, RoutedEventArgs e)
+        private async void submitBtn_Click(object sender, RoutedEventArgs e)
         {
             if (isAwaitingInput)
             {
-                // Ignore this click because WaitForUserInputAsync handles it
+                // Ignore because handled by WaitForUserInputAsync
                 return;
             }
 
@@ -490,33 +599,25 @@ namespace CyberBotPart3
             if (!string.IsNullOrEmpty(userInput))
             {
                 AddUserMessage(userInput);
-                ProcessUserInput(userInput);
+                await ProcessUserInput(userInput);
                 userInputTxt.Clear();
             }
         }
 
         private void minigameBtn_Click(object sender, RoutedEventArgs e)
         {
-            // Open the mini-game window and pass the user's name (if needed)
             var miniGameWindow = new cyberMinigameWindow();
-
-            // Optional: Pass data (e.g., user name) to personalize the game
-            // miniGameWindow.UserName = userName; 
-
-            miniGameWindow.Show();  // Show as a standalone window
-
-            // Optional: Hide the chatbot window while playing
+            miniGameWindow.Show();
             this.Hide();
-            miniGameWindow.Closed += (s, args) => this.Show(); // Re-show chatbot when game closes
-
+            miniGameWindow.Closed += (s, args) => this.Show();
         }
 
         private void exitBtn_Click(object sender, RoutedEventArgs e)
         {
-            this.Close(); // Close the chatbot window
+            this.Close();
         }
 
-        private void taskManagerBtn_Click(object sender, RoutedEventArgs e)
+        private async void taskManagerBtn_Click(object sender, RoutedEventArgs e)
         {
             var tasks = LoadTasks();
             var taskList = new StringBuilder("Your Cybersecurity Tasks:\n\n");
@@ -530,32 +631,13 @@ namespace CyberBotPart3
                 taskList.AppendLine();
             }
 
-            AddBotMessage(taskList.ToString());
+            await AddBotMessage(taskList.ToString());
         }
 
-       
-
-        private void LogActivity(string sender, string message)
+        private async void activityLogBtn_Click(object sender, RoutedEventArgs e)
         {
-            string logEntry = $"{DateTime.Now:dd/MM/yyyy HH:mm} | {sender}: {message}";
-            File.AppendAllLines(ActivityLogPath, new[] { logEntry });
+            await ShowActivityLogAsync();
         }
-
-        private void activityLogBtn_Click(object sender, RoutedEventArgs e)
-        {
-            if (File.Exists(ActivityLogPath))
-            {
-                string[] lines = File.ReadAllLines(ActivityLogPath);
-                AddBotMessage("📒 Activity Log:\n" + string.Join("\n", lines));
-            }
-            else
-            {
-                AddBotMessage("No activity has been logged yet.");
-            }
-        }
-
-
-
 
     }
 }

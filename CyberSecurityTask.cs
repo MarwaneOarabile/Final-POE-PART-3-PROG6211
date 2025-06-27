@@ -20,7 +20,10 @@ namespace CyberBotPart3
             reminder = Reminder;
         }
 
-        public override string ToString() =>
-            $"{Title}|{Description}|{Reminder?.ToString() ?? "null"}|{IsComplete}";
+        public override string ToString()
+        {
+            return $"{Title}|{Description}|{(Reminder.HasValue ? Reminder.Value.ToString("yyyy-MM-dd") : "null")}|{IsComplete}";
+        }
+
     }
 }
