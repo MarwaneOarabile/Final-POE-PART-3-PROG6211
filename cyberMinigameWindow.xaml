@@ -5,33 +5,166 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CyberBotPart3"
         mc:Ignorable="d"
-        Title="cyberMinigameWindow" Height="500" Width="800">
-    <Grid Background="#FF737373">
-        <RichTextBox x:Name="resultsRichTxtBx" Margin="82,324,292,10">
-            <FlowDocument>
-                <Paragraph>
-                    <Run Text=""/>
-                </Paragraph>
-            </FlowDocument>
-        </RichTextBox>
-        <RadioButton x:Name="optionA_RadioBtn" Content="RadioButton" HorizontalAlignment="Left" Margin="82,125,0,0" VerticalAlignment="Top"/>
-        <RadioButton x:Name="optionC_RadioBtn" Content="RadioButton" HorizontalAlignment="Left" Margin="82,216,0,0" VerticalAlignment="Top"/>
-        <RadioButton x:Name="optionB_RadioBtn" Content="RadioButton" HorizontalAlignment="Left" Margin="82,167,0,0" VerticalAlignment="Top"/>
-        <RadioButton x:Name="optionD_RadioBtn" Content="RadioButton" HorizontalAlignment="Left" Margin="82,263,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="answerATxtBx" HorizontalAlignment="Left" Margin="192,123,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="506" RenderTransformOrigin="0.008,1.825"/>
-        <TextBox x:Name="answerBTxtBx" HorizontalAlignment="Left" Margin="192,165,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="506" RenderTransformOrigin="0.008,1.825"/>
-        <TextBox x:Name="answerCTxtBx" HorizontalAlignment="Left" Margin="192,210,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="506" RenderTransformOrigin="0.008,1.825"/>
-        <TextBox x:Name="answerDTxtBx" HorizontalAlignment="Left" Margin="192,261,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="506" RenderTransformOrigin="0.008,1.825"/>
-        <Label Content="Question" HorizontalAlignment="Left" Margin="10,84,0,0" VerticalAlignment="Top"/>
-        <TextBox HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="349" Height="41"  Text="Cybersecurity Mini-Game"/>
-        <TextBox x:Name="questionTxtbx" HorizontalAlignment="Left" Margin="82,84,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="616" Height="26" />
-        <Button x:Name="submitBtn" Content="Submit Answer" HorizontalAlignment="Left" Margin="83,299,0,0" VerticalAlignment="Top" Click="SubmitAnswer_Click"/>
-        <RadioButton x:Name="dummyRadioBtn" Visibility="Collapsed" IsChecked="True"/>
-        <Button x:Name="nextQuestionBtn" Content="Next Question" HorizontalAlignment="Left" Margin="428,299,0,0" VerticalAlignment="Top" Click="NextQuestionBtn_Click" Visibility="Collapsed"/>
-        <Button x:Name="backToChatBtn" Content="Back to Chat" HorizontalAlignment="Left" Margin="627,324,0,0" VerticalAlignment="Top" Click="BackToChatBtn_Click"/>
+        Title="Cybersecurity Mini-Game"
+        Height="500" Width="800"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        Background="#FF1E1E2F">
 
+    <Grid Margin="20">
+        <!-- Title -->
+        <TextBox IsReadOnly="True"
+                 Text=" Cybersecurity Mini-Game"
+                 FontSize="20"
+                 FontWeight="Bold"
+                 Foreground="White"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 Margin="0,0,0,10"/>
 
+        <!-- Question Label -->
+        <Label Content="Question:"
+               FontWeight="Bold"
+               Foreground="White"
+               Margin="0,50,0,0"/>
 
+        <TextBox x:Name="questionTxtbx"
+                 Margin="80,50,0,0"
+                 Width="660"
+                 Height="30"
+                 HorizontalAlignment="Left"
+                 VerticalAlignment="Top"
+                 TextWrapping="Wrap"
+                 FontSize="14"
+                 Background="WhiteSmoke"
+                 BorderBrush="#444"/>
 
+        <!-- Answer Options -->
+        <!-- Option A -->
+        <RadioButton x:Name="optionA_RadioBtn"
+                     Content="A"
+                     Foreground="White"
+                     Margin="10,100,0,0"
+                     VerticalAlignment="Top"
+                     HorizontalAlignment="Left"/>
+        <TextBox x:Name="answerATxtBx"
+                 Margin="80,98,0,0"
+                 Width="660"
+                 Height="28"
+                 VerticalAlignment="Top"
+                 HorizontalAlignment="Left"
+                 Background="WhiteSmoke"
+                 BorderBrush="#444"
+                 FontSize="13"/>
+
+        <!-- Option B -->
+        <RadioButton x:Name="optionB_RadioBtn"
+                     Content="B"
+                     Foreground="White"
+                     Margin="10,140,0,0"
+                     VerticalAlignment="Top"
+                     HorizontalAlignment="Left"/>
+        <TextBox x:Name="answerBTxtBx"
+                 Margin="80,138,0,0"
+                 Width="660"
+                 Height="28"
+                 VerticalAlignment="Top"
+                 HorizontalAlignment="Left"
+                 Background="WhiteSmoke"
+                 BorderBrush="#444"
+                 FontSize="13"/>
+
+        <!-- Option C -->
+        <RadioButton x:Name="optionC_RadioBtn"
+                     Content="C"
+                     Foreground="White"
+                     Margin="10,180,0,0"
+                     VerticalAlignment="Top"
+                     HorizontalAlignment="Left"/>
+        <TextBox x:Name="answerCTxtBx"
+                 Margin="80,178,0,0"
+                 Width="660"
+                 Height="28"
+                 VerticalAlignment="Top"
+                 HorizontalAlignment="Left"
+                 Background="WhiteSmoke"
+                 BorderBrush="#444"
+                 FontSize="13"/>
+
+        <!-- Option D -->
+        <RadioButton x:Name="optionD_RadioBtn"
+                     Content="D"
+                     Foreground="White"
+                     Margin="10,220,0,0"
+                     VerticalAlignment="Top"
+                     HorizontalAlignment="Left"/>
+        <TextBox x:Name="answerDTxtBx"
+                 Margin="80,218,0,0"
+                 Width="660"
+                 Height="28"
+                 VerticalAlignment="Top"
+                 HorizontalAlignment="Left"
+                 Background="WhiteSmoke"
+                 BorderBrush="#444"
+                 FontSize="13"/>
+
+        <!-- Submit / Next Buttons -->
+        <Button x:Name="submitBtn"
+                Content="✔ Submit"
+                Width="120"
+                Height="35"
+                Margin="80,260,0,0"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Left"
+                Background="#2D89EF"
+                Foreground="White"
+                FontWeight="Bold"
+                BorderThickness="0"
+                Cursor="Hand"
+                Click="SubmitAnswer_Click"/>
+
+        <Button x:Name="nextQuestionBtn"
+                Content="➡ Next"
+                Width="120"
+                Height="35"
+                Margin="220,260,0,0"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Left"
+                Background="#28A745"
+                Foreground="White"
+                FontWeight="Bold"
+                BorderThickness="0"
+                Cursor="Hand"
+                Click="NextQuestionBtn_Click"
+                Visibility="Collapsed"/>
+
+        <!-- RichTextBox Result Area -->
+        <RichTextBox x:Name="resultsRichTxtBx"
+                     Margin="10,310,270,10"
+                     FontSize="14"
+                     Foreground="White"
+                     Background="#2F2F3B"
+                     BorderThickness="1"
+                     BorderBrush="#555"/>
+
+        <!-- Back to Chat Button -->
+        <Button x:Name="backToChatBtn"
+                Content="⬅ Back to Chat"
+                Width="150"
+                Height="35"
+                Margin="620,310,0,0"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Left"
+                Background="#EF3C3C"
+                Foreground="White"
+                FontWeight="Bold"
+                BorderThickness="0"
+                Cursor="Hand"
+                Click="BackToChatBtn_Click"/>
+
+        <!-- Dummy radio for logic -->
+        <RadioButton x:Name="dummyRadioBtn"
+                     Visibility="Collapsed"
+                     IsChecked="True"/>
     </Grid>
 </Window>

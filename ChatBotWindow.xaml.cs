@@ -163,7 +163,7 @@ namespace CyberBotPart3
             {
                 case "add_task":
                 case "reminder":
-                    HandleTaskCreation(input);
+                    await HandleTaskCreation(input);
                     return;
 
 
@@ -436,34 +436,7 @@ namespace CyberBotPart3
             await SaveNewTask(title, description, reminder);
         }
 
-        private async Task<string> WaitForUserInputAsync()
-        {
-            isAwaitingInput = true;
-
-            var tcs = new TaskCompletionSource<string>();
-
-            async void Handler(object s, RoutedEventArgs e)
-            {
-                var text = userInputTxt.Text.Trim();
-                if (!string.IsNullOrWhiteSpace(text))
-                {
-                    submitBtn.Click -= Handler;
-                    AddUserMessage(text);
-                    isAwaitingInput = false;
-                    userInputTxt.Clear();
-                    tcs.TrySetResult(text);
-                }
-                else
-                {
-                    await AddBotMessage("Nope cant leave it blank. ;)");
-                }
-            }
-
-            submitBtn.Click += Handler;
-
-            string result = await tcs.Task;
-            return result;
-        }
+        
 
         private async Task HandleTaskManagement()
         {
@@ -471,7 +444,7 @@ namespace CyberBotPart3
 
             if (tasks.Count == 0)
             {
-                await AddBotMessage("📭 You don't have any tasks.");
+                await AddBotMessage(" You don't have any tasks.");
                 return;
             }
 
@@ -480,7 +453,7 @@ namespace CyberBotPart3
             for (int i = 0; i < tasks.Count; i++)
             {
                 var task = tasks[i];
-                string status = task.IsComplete ? "✅ Completed" : "🕒 Pending";
+                string status = task.IsComplete ? " Completed" : " Pending";
                 string reminderText = task.Reminder.HasValue ? $" (Remind on {task.Reminder.Value:dd-MMM-yyyy})" : "";
                 await AddBotMessage($"{i + 1}. {task.Title} - {status}{reminderText}");
             }
@@ -490,14 +463,14 @@ namespace CyberBotPart3
 
             if (choice == "cancel")
             {
-                await AddBotMessage("❌ Task management cancelled.");
+                await AddBotMessage(" Task management cancelled.");
                 return;
             }
 
             if (int.TryParse(choice, out int taskNumber) && taskNumber >= 1 && taskNumber <= tasks.Count)
             {
                 var selectedTask = tasks[taskNumber - 1];
-                await AddBotMessage($"📝 You selected: {selectedTask.Title}\nType 'delete' to remove it or 'complete' to mark it as done:");
+                await AddBotMessage($" You selected: {selectedTask.Title}\nType 'delete' to remove it or 'complete' to mark it as done:");
 
                 string action = (await WaitForUserInputAsync()).Trim().ToLower();
 
@@ -506,7 +479,7 @@ namespace CyberBotPart3
                     LogActivity("Task", $"Deleted task '{selectedTask.Title}'");
                     tasks.RemoveAt(taskNumber - 1);
                     SaveTasks(tasks);
-                    await AddBotMessage("🗑️ Task deleted.");
+                    await AddBotMessage("Task deleted.");
                     LogStructuredActivity($"Task deleted: '{selectedTask.Title}'");
 
                 }
@@ -515,18 +488,18 @@ namespace CyberBotPart3
                     selectedTask.IsComplete = true;
                     SaveTasks(tasks);
                     LogActivity("Task", $"Marked task '{selectedTask.Title}' as completed");
-                    await AddBotMessage("✅ Task marked as completed.");
+                    await AddBotMessage("Task marked as completed.");
                     LogStructuredActivity($"Task completed: '{selectedTask.Title}'");
 
 
                 }
                 else if (action == "cancel")
                 {
-                    await AddBotMessage("❌ Action cancelled.");
+                    await AddBotMessage("Action cancelled.");
                 }
                 else
                 {
-                    await AddBotMessage("⚠️ Action not recognized. Please try again.");
+                    await AddBotMessage("Action not recognized. Please try again.");
                 }
             }
             else
@@ -587,6 +560,34 @@ namespace CyberBotPart3
 
 
 
+        }
+        private async Task<string> WaitForUserInputAsync()
+        {
+            isAwaitingInput = true;
+
+            var tcs = new TaskCompletionSource<string>();
+
+            async void Handler(object s, RoutedEventArgs e)
+            {
+                var text = userInputTxt.Text.Trim();
+                if (!string.IsNullOrWhiteSpace(text))
+                {
+                    submitBtn.Click -= Handler;
+                    AddUserMessage(text);
+                    isAwaitingInput = false;
+                    userInputTxt.Clear();
+                    tcs.TrySetResult(text);
+                }
+                else
+                {
+                    await AddBotMessage("Nope cant leave it blank. ;)");
+                }
+            }
+
+            submitBtn.Click += Handler;
+
+            string result = await tcs.Task;
+            return result;
         }
 
         private void SaveTasks(System.Collections.Generic.List<CyberSecurityTask> tasks)
