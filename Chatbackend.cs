@@ -55,7 +55,7 @@ namespace CyberBotPart3
   @@@@          @@@
   @@@@  @@@@@@  @@@
   @@@@  @@@@@@  @@@
-  @@@@  @@@  @  @@@
+  @@@@  @@  @@  @@@
   @@@@  @@@@@@  @@@
   @@@@   @@@@   @@@
   @@@@          @@@
@@ -108,7 +108,7 @@ namespace CyberBotPart3
 
         // this methods is used to display a menu
 
-
+        /*
         public void StartMenu()
         {
             PrintDivider();
@@ -159,10 +159,10 @@ namespace CyberBotPart3
 
             } while (!cancel);
         }
-
+        */
 
         // q4 Basic  general Responses System
-
+        /*
         private void Reponses()
         {
             cancel = false;
@@ -553,5 +553,6 @@ namespace CyberBotPart3
             Console.ResetColor();
         }
 
+        */
     }
 }

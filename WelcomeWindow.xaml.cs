@@ -56,5 +56,7 @@ namespace CyberBotPart3
             this.Close();
             chatWindow.Show();
         }
+
+        
     }
 }

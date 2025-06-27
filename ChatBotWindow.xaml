@@ -18,7 +18,7 @@
         <Button x:Name="minigameBtn" Content="Cyber-security&#xD;&#xA; Mini games" HorizontalAlignment="Left" Margin="181,63,0,0" VerticalAlignment="Top" Height="57" Width="117" Click="minigameBtn_Click"/>
         <Button  x:Name="taskManagerBtn" Content="View Tasks" HorizontalAlignment="Left" Margin="336,63,0,0" VerticalAlignment="Top" Height="57" Width="116" Click="taskManagerBtn_Click" />
         <Button x:Name="exitBtn" Content="Exit" HorizontalAlignment="Left" Margin="501,63,0,0" VerticalAlignment="Top" Height="57" Width="117" RenderTransformOrigin="1.48,0.685" Click="exitBtn_Click"/>
-        <TextBox x:Name="ConversationHolderTxtBx" HorizontalAlignment="Center" Height="247" Margin="0,125,0,0" VerticalAlignment="Top" Width="780" />
+        <RichTextBox Name="ConversationHolderTxtBx" IsReadOnly="True" VerticalScrollBarVisibility="Auto" Margin="10,145,155,119" />
 
     </Grid>
 </Window>

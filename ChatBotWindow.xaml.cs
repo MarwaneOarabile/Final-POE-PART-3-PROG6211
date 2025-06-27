@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Media;
 
 namespace CyberBotPart3
 {
@@ -48,7 +50,15 @@ namespace CyberBotPart3
             { "log", new List<string> { "show history", "activity log", "what did i do", "what have you done", "log" } },
             { "help", new List<string> { "help", "show help", "assist me" } },
             { "exit", new List<string> { "exit", "quit", "close", "bye" } },
-            { "minigame", new List<string> { "minigame", "play game", "start game" } }
+            { "minigame", new List<string> { "minigame", "play game", "start game" } },
+            { "manage_tasks", new List<string> { "manage tasks", "edit tasks", "task manager", "show tasks", "manage", "tasks" } },
+            //{ "phishing", new List<string> { "phishing", "scam email", "fake message", "email trick" } },
+            //{ "password", new List<string> { "password", "strong password", "secure login" } },
+           // { "browsing", new List<string> { "browsing", "internet safety", "web security" } },
+           // { "privacy", new List<string> { "privacy", "data leak", "personal info" } },
+           // { "scam", new List<string> { "scam", "fraud", "fake" } },
+           //{ "cybersecurity", new List<string> { "cybersecurity", "cyber security", "cyber safety" } }
+
         };
 
 
@@ -69,45 +79,80 @@ namespace CyberBotPart3
 
         private void AddUserMessage(string message)
         {
-            ConversationHolderTxtBx.AppendText($"You: {message}\n");
+            var paragraph = new Paragraph();
+
+            var prefix = new Run("You: ")
+            {
+                Foreground = Brushes.DarkCyan,
+                FontWeight = FontWeights.Bold
+            };
+
+            var content = new Run(message)
+            {
+                Foreground = Brushes.Black
+            };
+
+            paragraph.Inlines.Add(prefix);
+            paragraph.Inlines.Add(content);
+
+            ConversationHolderTxtBx.Document.Blocks.Add(paragraph);
             LogActivity("User", message);
             ScrollToBottom();
         }
 
+
         private async Task AddBotMessage(string message)
         {
             if (isTyping)
-                return; // Prevent overlapping bot messages
+                return;
 
             isTyping = true;
 
-            ConversationHolderTxtBx.AppendText("CyberBot: ");
+            var paragraph = new Paragraph();
+
+            var prefix = new Run("CyberBot: ")
+            {
+                Foreground = Brushes.Purple,
+                FontWeight = FontWeights.Bold
+            };
+
+            var content = new Run()
+            {
+                Foreground = Brushes.Black
+            };
+
+            paragraph.Inlines.Add(prefix);
+            ConversationHolderTxtBx.Document.Blocks.Add(paragraph);
+
             LogActivity("CyberBot", message);
 
+            // Simulate typing effect
             foreach (char c in message)
             {
-                ConversationHolderTxtBx.AppendText(c.ToString());
+                content.Text += c;
+                paragraph.Inlines.Remove(content);
+                paragraph.Inlines.Add(content);
                 await Task.Delay(15);
             }
 
-            ConversationHolderTxtBx.AppendText("\n");
             ScrollToBottom();
-
             isTyping = false;
         }
+
 
         private void ScrollToBottom()
         {
             ConversationHolderTxtBx.ScrollToEnd();
         }
 
+
         // ======================
         // Response System
         // ======================
 
-        
 
-            private async Task ProcessUserInput(string input)
+
+        private async Task ProcessUserInput(string input)
         {
             string lowerInput = input.ToLower();
 
@@ -120,6 +165,12 @@ namespace CyberBotPart3
                 case "reminder":
                     HandleTaskCreation(input);
                     return;
+
+
+                case "manage_tasks":
+                    await HandleTaskManagement();
+                    return;
+
 
                 case "log":
                     await ShowActivityLogAsync();
@@ -216,7 +267,7 @@ namespace CyberBotPart3
         }
 
         // ======================
-        // Topic Handlers (unchanged)
+        // Topic Handlers 
         // ======================
 
         private async Task HandlePhishingTopic()
@@ -370,7 +421,7 @@ namespace CyberBotPart3
             return tasks;
         }
 
-        private async void HandleTaskCreation(string userInput)
+        private async Task HandleTaskCreation(string userInput)
         {
             await AddBotMessage("Let's create a new cybersecurity task!\nWhat should we call this task? (e.g. 'Enable 2FA')");
             string title = await WaitForUserInputAsync();
