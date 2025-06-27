@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
+// code manpulated from https://www.geeksforgeeks.org/dsa/introduction-to-levenshtein-distance/
+// code modified to fit the needs of the CyberBot project
 namespace CyberBotPart3
 {
     // german word thing 
@@ -29,9 +32,9 @@ namespace CyberBotPart3
                     {
                         int cost = (s[i - 1] == t[j - 1]) ? 0 : 1;
                         d[i, j] = Math.Min(
-                            Math.Min(d[i - 1, j] + 1,     // deletion
-                                     d[i, j - 1] + 1),    // insertion
-                                     d[i - 1, j - 1] + cost); // substitution
+                            Math.Min(d[i - 1, j] + 1,     
+                                     d[i, j - 1] + 1),    
+                                     d[i - 1, j - 1] + cost); 
                     }
                 }
 

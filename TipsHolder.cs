@@ -4,12 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
+// ======================
+// class holds various tips and responses
+// ======================
 namespace CyberBotPart3
 {
     public class TipsHolder
     {
-        // This class holds various tips and responses for the CyberBot.
-        // General tips
+        
         public List<string> generalTips = new List<string>
         {
             "Always keep your software updated to protect against vulnerabilities.",
@@ -18,7 +21,7 @@ namespace CyberBotPart3
             "Regularly back up your data to prevent loss in case of an attack."
         };
 
-        // Tip collections
+        
         public List<string> phishingTips = new List<string>
         {
             "Be cautious of emails asking for personal information. Scammers often disguise themselves as trusted organisations.",
@@ -62,7 +65,7 @@ namespace CyberBotPart3
                 "Avoid using public Wi-Fi for sensitive transactions."
             };
 
-        // Other tip lists (browsingTips, privacyTips, etc.) would go here...
+    
 
         
     }

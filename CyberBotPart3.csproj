@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <None Update="Resources\greetings.wav">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="txt files\activity_log.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

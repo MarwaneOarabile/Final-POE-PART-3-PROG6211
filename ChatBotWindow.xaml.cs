@@ -1,4 +1,5 @@
-﻿using System;
+﻿//st10436124 POE Part 3
+using System;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -52,13 +53,7 @@ namespace CyberBotPart3
             { "exit", new List<string> { "exit", "quit", "close", "bye" } },
             { "minigame", new List<string> { "minigame", "play game", "start game" } },
             { "manage_tasks", new List<string> { "manage tasks", "edit tasks", "task manager", "show tasks", "manage", "tasks" } },
-            //{ "phishing", new List<string> { "phishing", "scam email", "fake message", "email trick" } },
-            //{ "password", new List<string> { "password", "strong password", "secure login" } },
-           // { "browsing", new List<string> { "browsing", "internet safety", "web security" } },
-           // { "privacy", new List<string> { "privacy", "data leak", "personal info" } },
-           // { "scam", new List<string> { "scam", "fraud", "fake" } },
-           //{ "cybersecurity", new List<string> { "cybersecurity", "cyber security", "cyber safety" } }
-
+            
         };
 
 
@@ -609,7 +604,7 @@ namespace CyberBotPart3
 
         private void LogActivity(string category, string description)
         {
-            // Use structured format instead of colon-separated
+            
             LogStructuredActivity($"{category}: {description}");
         }
 
@@ -634,7 +629,7 @@ namespace CyberBotPart3
                     int count = 1;
                     foreach (var entry in recentEntries)
                     {
-                        // Parse both log formats
+                        
                         string displayText = ParseLogEntry(entry);
                         formattedLog.AppendLine($"{count}. {displayText}");
                         count++;
@@ -651,25 +646,24 @@ namespace CyberBotPart3
 
         private string ParseLogEntry(string logEntry)
         {
-            // Split into parts
+            
             var parts = logEntry.Split('|');
 
-            // Handle structured log format: "DateTime | summary"
             if (parts.Length > 1)
             {
                 return parts[1].Trim();
             }
 
-            // Handle unstructured format: "DateTime | category: description"
+           
             var colonParts = logEntry.Split(':');
             if (colonParts.Length > 1)
             {
-                // Extract just the description
+                
                 int colonIndex = logEntry.IndexOf(':');
                 return logEntry.Substring(colonIndex + 1).Trim();
             }
 
-            // Fallback to raw entry
+            
             return logEntry;
         }
 

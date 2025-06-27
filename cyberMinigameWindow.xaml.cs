@@ -1,4 +1,5 @@
-﻿using System;
+﻿//st10436124 POE Part 3
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
@@ -17,6 +18,9 @@ namespace CyberBotPart3
         private List<RadioButton> radioButtons = new();
         private List<TextBox> answerBoxes = new();
 
+        // ======================
+        // mini game function
+        // ======================
 
         public cyberMinigameWindow()
         {
@@ -43,6 +47,10 @@ namespace CyberBotPart3
                 LoadNextQuestion();
             };
         }
+
+        // ======================
+        // Core mingame Methods
+        // ======================
 
         private void LoadNextQuestion()
         {
@@ -111,6 +119,24 @@ namespace CyberBotPart3
 
         }
 
+        private void ShowFinalScore()
+        {
+            resultsRichTxtBx.Document.Blocks.Clear();
+            questionTxtbx.Text = "Quiz Completed! 🎉";
+
+            foreach (var box in answerBoxes)
+                box.Visibility = Visibility.Collapsed;
+
+            foreach (var rb in radioButtons)
+                rb.Visibility = Visibility.Collapsed;
+
+            string result = $"You scored {score} out of {questionBank.MultipleChoiceQuestions.Count + questionBank.TrueFalseQuestions.Count}.";
+            resultsRichTxtBx.Document.Blocks.Add(new Paragraph(new Run(result)));
+        }
+
+        // ======================
+        //  button funtions
+        // ======================
         private void SubmitAnswer_Click(object sender, RoutedEventArgs e)
         {
 
@@ -159,20 +185,7 @@ namespace CyberBotPart3
         }
 
 
-        private void ShowFinalScore()
-        {
-            resultsRichTxtBx.Document.Blocks.Clear();
-            questionTxtbx.Text = "Quiz Completed! 🎉";
-
-            foreach (var box in answerBoxes)
-                box.Visibility = Visibility.Collapsed;
-
-            foreach (var rb in radioButtons)
-                rb.Visibility = Visibility.Collapsed;
-
-            string result = $"You scored {score} out of {questionBank.MultipleChoiceQuestions.Count + questionBank.TrueFalseQuestions.Count}.";
-            resultsRichTxtBx.Document.Blocks.Add(new Paragraph(new Run(result)));
-        }
+        
 
         private void NextQuestionBtn_Click(object sender, RoutedEventArgs e)
         {
