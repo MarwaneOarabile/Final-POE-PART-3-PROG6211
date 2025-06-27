@@ -183,6 +183,12 @@ namespace CyberBotPart3
             LoadNextQuestion();
         }
 
+        private void BackToChatBtn_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close(); // Close the mini-game window
+                          // If you hid the chatbot earlier, it will reappear automatically
+        }
+
 
 
     }

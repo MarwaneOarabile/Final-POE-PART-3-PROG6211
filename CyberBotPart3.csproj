@@ -18,4 +18,13 @@
     <Folder Include="CyberMinigame\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Resources\greetings.wav">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Update="txt files\activity_log.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

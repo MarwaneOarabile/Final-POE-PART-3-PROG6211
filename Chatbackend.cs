@@ -8,6 +8,7 @@ using System.Media;
 using System.Threading.Channels;
 using System.Globalization;
 using System.IO;
+using System.Windows.Documents;
 
 
 namespace CyberBotPart3
@@ -41,77 +42,65 @@ namespace CyberBotPart3
 
 
         // q2 add a method to display the logo
-        public void imageDisplay()
+        public string imageDisplay()
         {
-            string asciiArtLogo = @"                                                 @@@@@@                                             
-                                               @@@@@@@@@@@                                          
-                                            @@@@@@@@@@@@@@@@                                        
-                                   @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@                               
-                                   @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@                               
-                                   @@@@@@@@@@@@@@      @@@@@@@@@@@@@@                               
-                                   @@@@@@@@@@@@   @@@@   @@@@@@@@@@@@                               
-                                   @@@@@@@@@@@  @@@@@@@@  @@@@@@@@@@@                               
-                                   @@@@@@@@@@@  @@@@@@@@  @@@@@@@@@@@                               
-                                   @@@@@@@@@@@  @@@@@@@@  @@@@@@@@@@@                               
-                                   @@@@@@@@@@@  @@@@@@@@  @@@@@@@@@@@@                              
-                                   @@@@@@@                    @@@@@@@@                              
-                                   @@@@@@@  @@@@@@@@@@@@@@@@  @@@@@@@@                              
-                                   @@@@@@@  @@@@@@@@@@@@@@@@  @@@@@@@@                              
-                                   @@@@@@@  @@@@@@@  @@@@@@@  @@@@@@@@                              
-                                   @@@@@@@  @@@@@@@@@@@@@@@@  @@@@@@@@                              
-                                   @@@@@@@      @@@@@@@@@     @@@@@@@                               
-                                   @@@@@@@@@@@@          @@@@@@@@@@@@                               
-                                    @@@@@@@@@@@@@@@  @@@@@@@@@@@@@@@                                
-                                     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@                                 
-                                       @@@@@@@@@@@@@@@@@@@@@@@@@@                                   
-                                          @@@@@@@@@@@@@@@@@@@@                                      
-                                             @@@@@@@@@@@@@@                                         
-                                                @@@@@@@@";
+            string asciiArtLogo = @"
+    
+  @@@@@@@@@@@@@@@@@
+  @@@@@@@    @@@@@@
+  @@@@@@  @@  @@@@@
+  @@@@@  @@@@  @@@@
+  @@@@@  @@@@  @@@@
+  @@@@@  @@@@  @@@@
+  @@@@          @@@
+  @@@@  @@@@@@  @@@
+  @@@@  @@@@@@  @@@
+  @@@@  @@@  @  @@@
+  @@@@  @@@@@@  @@@
+  @@@@   @@@@   @@@
+  @@@@          @@@
+  @@@@@@@@@@@@@@@@@
+    ";
 
-
-            Console.WriteLine("\n ========= CYBERSECURITY AWARENESS BOT =========\n");
-            Console.WriteLine(asciiArtLogo);
+            return asciiArtLogo;
         }
+
+
+
 
         // q3 Display a text-based welcome message with decorative boarderd 
 
-        private string name;
+        public string userName = "";
         bool cancel = false;
-        //method gets name
-        public void GetName()
+        
+
+
+        private string AskName()
         {
-            cancel = false;
-
-            do
+            
+            userName = Microsoft.VisualBasic.Interaction.InputBox("Please enter your name:", "CyberBot Welcome");
+            while (string.IsNullOrWhiteSpace(userName))
             {
-
-                TypingEffect("Please enter your name: ");
-                name = Console.ReadLine();
-
-                if (string.IsNullOrWhiteSpace(name))
-                {
-                    TypingEffect("Please enter a valid name.");
-                }
-                else
-                {
-                    cancel = true;
-                }
-
-            } while (!cancel);
+                userName = Microsoft.VisualBasic.Interaction.InputBox("Name is required. Please enter your name:", "CyberBot Welcome");
+            }
+            return userName;
         }
 
-        // this method displays a welcome message with name
-        public void WelcomeMessage()
-        {
-            GetName();
 
-            PrintDivider();
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("╔═══════════════════════════════════════════════╗");
-            Console.WriteLine($"║             WELCOME {name.ToUpper(),-25} ║");
-            Console.WriteLine("╚═══════════════════════════════════════════════╝");
-            Console.ResetColor();
-            TypingEffect($"Welcome {name} to the CyberBot, the best cybersecurity chatbot!");
+        public string WelcomeMessage()
+        {
+           userName= AskName();
+
+            string welcomeStr = "\n╔═══════════════════════════════════════════════╗\n" +
+                               $"║             WELCOME {userName.ToUpper(),-25} ║\n" +
+                                "╚═══════════════════════════════════════════════╝\n" +
+                               $"Welcome {userName} to the CyberBot, the best cybersecurity chatbot!"
+                               + "\n click start chat to talk to the cyberbot or click exit to exit application";
+
+            
+ 
+
+            return welcomeStr;
         }
 
 
@@ -273,6 +262,7 @@ namespace CyberBotPart3
             } while (!cancel);
         }
 
+        private string name;
 
         //allows user to ask their own questions
         public void userQuestion()

@@ -9,85 +9,52 @@ namespace CyberBotPart3
 {
     public partial class WelcomeWindow : Window 
     {
-        private string userName = "";
+        
+
+        Chatbackend myObj = new Chatbackend();
 
         public WelcomeWindow()
         {
             InitializeComponent();
 
             Loaded += WelcomeWindow_Loaded;
+            
         }
 
         private async void WelcomeWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            await Task.Run(() => myObj.PlayGreeting());
+            await Task.Delay(300);
 
-            // reference Chatbackend.cs for PlayGreeting method
-            Chatbackend chatBackend = new Chatbackend();
-            
+            outputBox.Text = myObj.imageDisplay();
+            outputBox.AppendText(myObj.WelcomeMessage());
 
-            await Task.Run(() => chatBackend.PlayGreeting());
-            await Task.Delay(300); // smooth transition
+            UserName = myObj.userName;
 
-            ShowAsciiLogo();
-            await Task.Delay(500);
-
-            AskName();
-
-            ShowWelcomeMessage(userName);
             startBtn.IsEnabled = true;
         }
 
-        
 
-        private void ShowAsciiLogo()
+        public String UserName
         {
-            string logo = @"                                                 @@@@@@                                             
-                                               @@@@@@@@@@@                                          
-                                            @@@@@@@@@@@@@@@@                                        
-                                   @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@                               
-                                   @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@                               
-                                   @@@@@@@@@@@@@@      @@@@@@@@@@@@@@                               
-                                   @@@@@@@@@@@@   @@@@   @@@@@@@@@@@@                               
-                                   @@@@@@@@@@@  @@@@@@@@  @@@@@@@@@@@                               
-                                   @@@@@@@@@@@  @@@@@@@@  @@@@@@@@@@@                               
-                                   @@@@@@@@@@@  @@@@@@@@  @@@@@@@@@@@                               
-                                   @@@@@@@@@@@  @@@@@@@@  @@@@@@@@@@@@                              
-                                   @@@@@@@                    @@@@@@@@                              
-                                   @@@@@@@  @@@@@@@@@@@@@@@@  @@@@@@@@                              
-                                   @@@@@@@  @@@@@@@@@@@@@@@@  @@@@@@@@                              
-                                   @@@@@@@  @@@@@@@  @@@@@@@  @@@@@@@@                              
-                                   @@@@@@@  @@@@@@@@@@@@@@@@  @@@@@@@@                              
-                                   @@@@@@@      @@@@@@@@@     @@@@@@@                               
-                                   @@@@@@@@@@@@          @@@@@@@@@@@@                               
-                                    @@@@@@@@@@@@@@@  @@@@@@@@@@@@@@@                                
-                                     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@                                 
-                                       @@@@@@@@@@@@@@@@@@@@@@@@@@                                   
-                                          @@@@@@@@@@@@@@@@@@@@                                      
-                                             @@@@@@@@@@@@@@                                         
-                                                @@@@@@@@";
-
-            outputBox.Document.Blocks.Clear();
-            outputBox.Document.Blocks.Add(new Paragraph(new Run(logo)));
+            get { return myObj.userName; }
+            set { myObj.userName = value; }
         }
 
-        private void AskName()
-        {
-            userName = Microsoft.VisualBasic.Interaction.InputBox("Please enter your name:", "CyberBot Welcome");
-            while (string.IsNullOrWhiteSpace(userName))
-            {
-                userName = Microsoft.VisualBasic.Interaction.InputBox("Name is required. Please enter your name:", "CyberBot Welcome");
-            }
-        }
 
-        private void ShowWelcomeMessage(string name)
-        {
-            outputBox.Document.Blocks.Add(new Paragraph(new Run($"\n\nWELCOME {name.ToUpper()} 👋")));
-            outputBox.Document.Blocks.Add(new Paragraph(new Run($"Welcome {name}, to the CyberBot — your digital cybersecurity guide!")));
-        }
+
 
         private void Exit_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
+        }
+
+        private void startBtn_Click(object sender, RoutedEventArgs e)
+        {
+            ChatBotWindow chatWindow = new ChatBotWindow(UserName);
+            Application.Current.MainWindow = chatWindow;
+            this.Close();
+            chatWindow.Show();
         }
     }
 }

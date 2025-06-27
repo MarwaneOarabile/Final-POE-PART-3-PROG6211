@@ -9,10 +9,10 @@
     <Grid>
         <Image Margin="10,10,10,10" Source="/cyber-security-logo.jpg" Stretch="Fill" Opacity="0.2" />
 
-        <Button x:Name="startBtn" Content="Start Chat" HorizontalAlignment="Left" Margin="115,358,0,0" VerticalAlignment="Top" Height="47" Width="136" IsEnabled="False"/>
+        <Button x:Name="startBtn" Content="Start Chat" HorizontalAlignment="Left" Margin="115,358,0,0" VerticalAlignment="Top" Height="47" Width="136" IsEnabled="False" Click="startBtn_Click"/>
         <Button Content="Exit Application" HorizontalAlignment="Left" Margin="551,358,0,0" VerticalAlignment="Top" Height="47" Width="136" Click="Exit_Click"/>
-        <Button Content="FAQ" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+        <Button Content="FAQ" HorizontalAlignment="Left" Margin="10,372,0,0" VerticalAlignment="Top"/>
 
-        <RichTextBox x:Name="outputBox" Margin="115,20,113,217" />
+        <TextBox x:Name="outputBox" Margin="10,10,10,81"   FontFamily="Consolas" FontSize="12"  IsReadOnly="True" TextWrapping="NoWrap"/>
     </Grid>
 </Window>

@@ -5,26 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CyberBotPart3"
         mc:Ignorable="d"
-        Title="ChatBotWindow" Height="450" Width="800">
+        Title="ChatBotWindow" Height="500" Width="800">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <TextBox x:Name="userInputTxt" HorizontalAlignment="Left" Margin="10,385,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="635" Height="39" TextChanged="TextBox_TextChanged"/>
+        <TextBox x:Name="userInputTxt" HorizontalAlignment="Left" Margin="10,385,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="635" Height="39" />
         <Image x:Name="cyberImage" Margin="651,10,10,319" Source="/cyber-security-logo.jpg" Stretch="Fill"/>
-        <Button x:Name="submitBtn" Content="submit" HorizontalAlignment="Left" Margin="660,385,0,0" VerticalAlignment="Top" Height="39" Width="95" Click="Button_Click_1"/>
+        <Button x:Name="submitBtn" Content="submit" HorizontalAlignment="Left" Margin="660,385,0,0" VerticalAlignment="Top" Height="39" Width="95" Click="submitBtn_Click" />
         <Label x:Name="cyberBotTitleLbl" Content="CyberBot the best cybersecurity chatbot!" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="48" Width="615"/>
-        <Button x:Name="activityLogBtn" Content="Activity Log" HorizontalAlignment="Left" Margin="10,63,0,0" VerticalAlignment="Top" Height="57" Width="117"/>
-        <Button x:Name="minigameBtn" Content="Cyber-security&#xD;&#xA; Mini games" HorizontalAlignment="Left" Margin="171,63,0,0" VerticalAlignment="Top" Height="57" Width="117"/>
-        <Button Content="Task Manager" HorizontalAlignment="Center" Margin="0,63,0,0" VerticalAlignment="Top" Height="57" Width="116" Click="Button_Click_2"/>
-        <Button x:Name="exitBtn" Content="Exit" HorizontalAlignment="Left" Margin="508,63,0,0" VerticalAlignment="Top" Height="57" Width="117" RenderTransformOrigin="1.48,0.685"/>
-        <RichTextBox x:Name="ConversationHolderRichTxtBx" HorizontalAlignment="Center" Height="247" Margin="0,125,0,0" VerticalAlignment="Top" Width="780">
-            <FlowDocument>
-                <Paragraph>
-                    <Run Text="RichTextBox"/>
-                </Paragraph>
-            </FlowDocument>
-        </RichTextBox>
+        <Button x:Name="activityLogBtn" Content="Activity Log" HorizontalAlignment="Left" Margin="21,63,0,0" VerticalAlignment="Top" Height="57" Width="117" Click="activityLogBtn_Click"/>
+        <Button x:Name="minigameBtn" Content="Cyber-security&#xD;&#xA; Mini games" HorizontalAlignment="Left" Margin="181,63,0,0" VerticalAlignment="Top" Height="57" Width="117" Click="minigameBtn_Click"/>
+        <Button  x:Name="taskManagerBtn" Content="View Tasks" HorizontalAlignment="Left" Margin="336,63,0,0" VerticalAlignment="Top" Height="57" Width="116" Click="taskManagerBtn_Click" />
+        <Button x:Name="exitBtn" Content="Exit" HorizontalAlignment="Left" Margin="501,63,0,0" VerticalAlignment="Top" Height="57" Width="117" RenderTransformOrigin="1.48,0.685" Click="exitBtn_Click"/>
+        <TextBox x:Name="ConversationHolderTxtBx" HorizontalAlignment="Center" Height="247" Margin="0,125,0,0" VerticalAlignment="Top" Width="780" />
 
     </Grid>
 </Window>

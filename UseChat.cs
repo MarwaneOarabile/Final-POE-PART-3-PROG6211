@@ -1,12 +1,11 @@
 ﻿//st10436124 POE Part 1
 
-namespace CyberBotPart2
+namespace CyberBotPart3
 {
     internal class UseChat
     {
         // runs the code
-        static void Main(string[] args)
-        {
+        /*
             // plays the audio file when the application starts
             Chatbackend myObjChat = new Chatbackend();
             myObjChat.PlayGreeting();
@@ -20,11 +19,11 @@ namespace CyberBotPart2
             // displays the menu
             myObjChat.StartMenu();
 
+        */
 
 
 
 
-
-        }
+        
     }
 }

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CyberBotPart3"
         mc:Ignorable="d"
-        Title="cyberMinigameWindow" Height="450" Width="800">
+        Title="cyberMinigameWindow" Height="500" Width="800">
     <Grid Background="#FF737373">
         <RichTextBox x:Name="resultsRichTxtBx" Margin="82,324,292,10">
             <FlowDocument>
@@ -23,11 +23,13 @@
         <TextBox x:Name="answerCTxtBx" HorizontalAlignment="Left" Margin="192,210,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="506" RenderTransformOrigin="0.008,1.825"/>
         <TextBox x:Name="answerDTxtBx" HorizontalAlignment="Left" Margin="192,261,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="506" RenderTransformOrigin="0.008,1.825"/>
         <Label Content="Question" HorizontalAlignment="Left" Margin="10,84,0,0" VerticalAlignment="Top"/>
-        <TextBox HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="349" Height="69"  Text="Cybersecurity Mini-Game"/>
+        <TextBox HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="349" Height="41"  Text="Cybersecurity Mini-Game"/>
         <TextBox x:Name="questionTxtbx" HorizontalAlignment="Left" Margin="82,84,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="616" Height="26" />
         <Button x:Name="submitBtn" Content="Submit Answer" HorizontalAlignment="Left" Margin="83,299,0,0" VerticalAlignment="Top" Click="SubmitAnswer_Click"/>
         <RadioButton x:Name="dummyRadioBtn" Visibility="Collapsed" IsChecked="True"/>
         <Button x:Name="nextQuestionBtn" Content="Next Question" HorizontalAlignment="Left" Margin="428,299,0,0" VerticalAlignment="Top" Click="NextQuestionBtn_Click" Visibility="Collapsed"/>
+        <Button x:Name="backToChatBtn" Content="Back to Chat" HorizontalAlignment="Left" Margin="627,324,0,0" VerticalAlignment="Top" Click="BackToChatBtn_Click"/>
+
 
 
 
