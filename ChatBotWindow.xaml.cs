@@ -162,6 +162,8 @@ namespace CyberBotPart3
             switch (detectedIntent)
             {
                 case "add_task":
+                    await HandleTaskCreation(input);
+                    return;
                 case "reminder":
                     await HandleTaskCreation(input);
                     return;
@@ -208,7 +210,7 @@ namespace CyberBotPart3
             }
 
             // Topic matching (priority order)
-            if (lowerInput.ContainsAny("phish", "scam email", "email trick", "fake message"))
+            if (lowerInput.ContainsAny("phishing", "scam email", "email trick", "fake message"))
             {
                 await HandlePhishingTopic();
                 return;
@@ -607,8 +609,8 @@ namespace CyberBotPart3
 
         private void LogActivity(string category, string description)
         {
-            string logEntry = $"{DateTime.Now:dd/MM/yyyy HH:mm} | {category}: {description}";
-            File.AppendAllLines(ActivityLogPath, new[] { logEntry });
+            // Use structured format instead of colon-separated
+            LogStructuredActivity($"{category}: {description}");
         }
 
 
@@ -616,23 +618,59 @@ namespace CyberBotPart3
         {
             if (File.Exists(ActivityLogPath))
             {
-                string[] lines = File.ReadAllLines(ActivityLogPath);
-                var recentEntries = lines.Reverse().Take(10).Reverse(); // Last 10 entries
-                var formattedLog = "📒 Here's a summary of recent actions:\n";
+                string[] allLines = File.ReadAllLines(ActivityLogPath);
+                var recentEntries = allLines.Length > 10
+                    ? allLines.Skip(allLines.Length - 10).ToArray()
+                    : allLines;
 
-                int count = 1;
-                foreach (var line in recentEntries)
+                var formattedLog = new StringBuilder("📒 Here's a summary of recent actions:\n");
+
+                if (recentEntries.Length == 0)
                 {
-                    formattedLog += $"{count}. {line.Split('|')[1].Trim()}\n";
-                    count++;
+                    formattedLog.AppendLine("No recent activities found.");
+                }
+                else
+                {
+                    int count = 1;
+                    foreach (var entry in recentEntries)
+                    {
+                        // Parse both log formats
+                        string displayText = ParseLogEntry(entry);
+                        formattedLog.AppendLine($"{count}. {displayText}");
+                        count++;
+                    }
                 }
 
-                await AddBotMessage(formattedLog);
+                await AddBotMessage(formattedLog.ToString());
             }
             else
             {
-                await AddBotMessage("No activity has been logged yet.");
+                await AddBotMessage("No activity log file found.");
             }
+        }
+
+        private string ParseLogEntry(string logEntry)
+        {
+            // Split into parts
+            var parts = logEntry.Split('|');
+
+            // Handle structured log format: "DateTime | summary"
+            if (parts.Length > 1)
+            {
+                return parts[1].Trim();
+            }
+
+            // Handle unstructured format: "DateTime | category: description"
+            var colonParts = logEntry.Split(':');
+            if (colonParts.Length > 1)
+            {
+                // Extract just the description
+                int colonIndex = logEntry.IndexOf(':');
+                return logEntry.Substring(colonIndex + 1).Trim();
+            }
+
+            // Fallback to raw entry
+            return logEntry;
         }
 
         // ======================
